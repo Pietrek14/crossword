@@ -106,7 +106,9 @@ namespace Crossword
 
 		void display(std::ostream &stream) const;
 		void display_clues(std::ostream &stream) const;
+		void display_correct(std::ostream &stream) const;
 	};
 
 	auto operator<<(std::ostream &stream, const Crossword::Entry &entry) -> std::ostream &;
+	auto operator<<(std::ostream &stream, const Crossword::Entry::AnswerCharacter &a) -> std::ostream &;
 }

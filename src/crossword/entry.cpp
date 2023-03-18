@@ -1,4 +1,7 @@
 #include "crossword.hpp"
+
+#include "../color/color.hpp"
+
 #include <cctype>
 
 Crossword::Crossword::Entry::Entry(std::vector<std::shared_ptr<AnswerCharacter>> answer, Position position, Direction direction, std::string correct, std::string clue) : answer(answer), position(position), direction(direction), correct_answer(correct), clue(clue)
@@ -64,7 +67,7 @@ auto Crossword::operator<<(std::ostream &stream, const Crossword::Crossword::Ent
     auto direction = entry.get_direction();
 
     stream
-        << position.first << ", " << position.second
+        << position.first + 1 << ", " << position.second + 1
         << " (" << (direction == Crossword::Crossword::Entry::Direction::HORIZONTAL ? "poziom" : "pion") << ")"
         << entry.clue;
 
@@ -72,3 +75,25 @@ auto Crossword::operator<<(std::ostream &stream, const Crossword::Crossword::Ent
 }
 
 Crossword::Crossword::Entry::AnswerCharacter::AnswerCharacter(char character, State state) : character(character), state(state) {}
+
+std::ostream& Crossword::operator<<(std::ostream& stream, const Crossword::Crossword::Entry::AnswerCharacter& character)
+{
+    switch (character.state)
+    {
+        case Crossword::Entry::AnswerCharacter::State::CORRECT:
+            stream << Color::Modifier(Color::FG_GREEN);
+            break;
+        case Crossword::Entry::AnswerCharacter::State::INCORRECT:
+            stream << Color::Modifier(Color::FG_RED);
+            break;
+        case Crossword::Entry::AnswerCharacter::State::UNKNOWN:
+            stream << Color::Modifier(Color::FG_BLUE);
+            break;
+    }
+
+    stream << character.character;
+
+    stream << Color::Modifier::FG_RESET;
+
+    return stream;
+}

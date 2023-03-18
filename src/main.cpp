@@ -109,7 +109,26 @@ auto main() -> int
                     crossword.check();
                     checks_count++;
 
-                    std::cout << "Checked " << checks_count << " times." << std::endl;
+                    std::cout << "Checked " << checks_count << (checks_count == 1 ? " time." : " times.") << std::endl;
+
+                    break;
+                }
+                case Action::FINISH:
+                {
+                    crossword.check();
+
+                    std::cout << "Your crossword:" << std::endl;
+
+                    crossword_display.display(std::cout);
+
+                    std::cout << std::endl << "Correct crossword:" << std::endl;
+
+                    crossword_display.display_correct(std::cout);
+
+                    std::cout << std::endl << "You checked " << checks_count << (checks_count == 1 ? " time." : " times.") << std::endl
+                        << "Thanks for playing!" << std::endl;
+
+                    playing = false;
 
                     break;
                 }
