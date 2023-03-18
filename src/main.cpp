@@ -10,9 +10,22 @@ auto main() -> int {
 
     std::ifstream input("crossword.cwd");
 
-    auto crossword = Crossword::load_from_stream(input);
+    if(input.is_open()) {
+        try {
+            auto crossword = Crossword::load_from_stream(input);
 
-    input.close();
+            input.close();
+
+            std::cout << crossword << std::endl;
+        } catch(std::exception& e) {
+            std::cerr << "Error: " << e.what() << std::endl;
+        }
+    }
+    else {
+        std::cerr << "Could not open file 'crossword.cwd'" << std::endl;
+    }
+
+    std::cout << "  -- END -- " << std::endl;
 
     return 0;
 }
