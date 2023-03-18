@@ -1,16 +1,16 @@
 #include "crossword.hpp"
 
-Crossword::Crossword::Entry::Entry(std::vector<std::shared_ptr<char>> characters, Position position, Direction direction, std::string correct, std::string clue) : characters(characters), position(position), direction(direction), correct(correct), clue(clue)
+Crossword::Crossword::Entry::Entry(std::vector<std::shared_ptr<char>> answer, Position position, Direction direction, std::string correct, std::string clue) : answer(answer), position(position), direction(direction), correct_answer(correct), clue(clue)
 {
-    if (characters.size() != correct.size())
+    if (answer.size() != correct.size())
     {
-        throw std::runtime_error("Characters and correct answer must have the same length");
+        throw IncorrectAnswerLengthError(correct.size(), answer.size());
     }
 }
 
 auto Crossword::Crossword::Entry::get_length() const -> size_t
 {
-    return characters.size();
+    return answer.size();
 }
 
 auto Crossword::Crossword::Entry::get_direction() const -> Direction
@@ -25,7 +25,20 @@ auto Crossword::Crossword::Entry::get_position() const -> Entry::Position
 
 auto Crossword::Crossword::Entry::get_character(size_t index) const -> char
 {
-    return *characters[index];
+    return *answer[index];
+}
+
+void Crossword::Crossword::Entry::set_answer(std::string new_answer)
+{
+	if (new_answer.size() != correct_answer.size())
+	{
+		throw IncorrectAnswerLengthError(correct_answer.size(), new_answer.size());
+	}
+
+	for (size_t i = 0; i < new_answer.size(); i++)
+	{
+		*answer[i] = new_answer[i];
+	}
 }
 
 auto Crossword::operator<<(std::ostream &stream, const Crossword::Crossword::Entry &entry) -> std::ostream &

@@ -86,7 +86,7 @@ auto Crossword::Crossword::load_from_stream(std::ifstream &stream) -> Crossword
         }
         else
         {
-            throw std::runtime_error("Invalid direction");
+            throw InvalidDirectionStringError(InvalidDirectionStringError(direction_str));
         }
 
         std::string clue;
@@ -117,4 +117,8 @@ auto Crossword::Crossword::load_from_stream(std::ifstream &stream) -> Crossword
     }
 
     return crossword;
+}
+
+auto Crossword::Crossword::answer(size_t entry_index, std::string answer) -> void {
+    entries[entry_index].set_answer(answer);
 }
