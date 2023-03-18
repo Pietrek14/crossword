@@ -6,17 +6,19 @@
 auto main() -> int {
     std::cout << "  -- CROSSWORD -- " << std::endl;
 
-    using Crossword = Crossword::Crossword;
-
     std::ifstream input("crossword.cwd");
 
     if(input.is_open()) {
         try {
-            auto crossword = Crossword::load_from_stream(input);
+            auto crossword = Crossword::Crossword::load_from_stream(input);
+
+            auto crossword_display = Crossword::Display(crossword);
 
             input.close();
 
-            std::cout << crossword << std::endl;
+            crossword_display.display(std::cout);
+            std::cout << std::endl;
+            crossword_display.display_clues(std::cout);
         } catch(std::exception& e) {
             std::cerr << "Error: " << e.what() << std::endl;
         }

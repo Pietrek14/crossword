@@ -39,7 +39,7 @@ auto Crossword::Crossword::load_from_stream(std::ifstream &stream) -> Crossword
             }
             else
             {
-                crossword_fields[i][j] = std::make_shared<char>(crossword_content[i][j]);
+                crossword_fields[i][j] = std::make_shared<char>(' ');
             }
         }
     }
@@ -119,21 +119,25 @@ auto Crossword::Crossword::load_from_stream(std::ifstream &stream) -> Crossword
     return crossword;
 }
 
-void Crossword::Crossword::display(std::ostream &stream) const
+Crossword::Display::Display(const Crossword& crossword) : crossword(crossword) {}
+
+void Crossword::Display::display(std::ostream &stream) const
 {
-    char **crossword_content = new char *[this->height + 1];
+    using Entry = Crossword::Entry;
 
-    for (auto i = 0; i < height; i++)
+    char **crossword_content = new char *[crossword.height + 1];
+
+    for (auto i = 0; i < crossword.height; i++)
     {
-        crossword_content[i] = new char[this->width + 1];
+        crossword_content[i] = new char[crossword.width + 1];
 
-        for (auto j = 0; j < width; j++)
+        for (auto j = 0; j < crossword.width; j++)
         {
             crossword_content[i][j] = '#';
         }
     }
 
-    for (const auto &entry : this->entries)
+    for (const auto &entry : crossword.entries)
     {
         auto entry_position = entry.get_position();
         auto entry_direction = entry.get_direction();
@@ -162,7 +166,7 @@ void Crossword::Crossword::display(std::ostream &stream) const
     {
         if (i % scale_factor.second != scale_factor.second / 2)
         {
-            for (auto j = 0; j < this->width * scale_factor.first; j++)
+            for (auto j = 0; j < crossword.width * scale_factor.first; j++)
                 stream << ' ';
 
             stream << std::endl;
@@ -170,7 +174,7 @@ void Crossword::Crossword::display(std::ostream &stream) const
             continue;
         }
 
-        for (auto j = 0; j < this->width + 1; j++)
+        for (auto j = 0; j < crossword.width + 1; j++)
         {
             int num_length;
 
@@ -197,9 +201,9 @@ void Crossword::Crossword::display(std::ostream &stream) const
         stream << std::endl;
     }
 
-    for (auto i = 0; i < this->height * scale_factor.second; i++)
+    for (auto i = 0; i < crossword.height * scale_factor.second; i++)
     {
-        for (auto j = 0; j < (this->width + 1) * scale_factor.first; j++)
+        for (auto j = 0; j < (crossword.width + 1) * scale_factor.first; j++)
         {
             // Display the row numbers
             if (j < scale_factor.first + 1)
@@ -248,7 +252,7 @@ void Crossword::Crossword::display(std::ostream &stream) const
         stream << std::endl;
     }
 
-    for (auto i = 0; i < height; i++)
+    for (auto i = 0; i < crossword.height; i++)
     {
         delete[] crossword_content[i];
     }
@@ -256,22 +260,12 @@ void Crossword::Crossword::display(std::ostream &stream) const
     delete[] crossword_content;
 }
 
-void Crossword::Crossword::display_clues(std::ostream &stream) const
+void Crossword::Display::display_clues(std::ostream &stream) const
 {
-    for (auto i = 0; i < this->entries.size(); i++)
+    for (auto i = 0; i < crossword.entries.size(); i++)
     {
-        stream << i + 1 << ". " << this->entries[i] << std::endl;
+        stream << i + 1 << ". " << crossword.entries[i] << std::endl;
     }
-}
-
-auto Crossword::operator<<(std::ostream& stream, const Crossword& crossword) -> std::ostream& {
-    crossword.display(stream);
-
-    stream << std::endl;
-
-    crossword.display_clues(stream);
-
-    return stream;
 }
 
 auto Crossword::operator<<(std::ostream &stream, const Crossword::Crossword::Entry &entry) -> std::ostream &

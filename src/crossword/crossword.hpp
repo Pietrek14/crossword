@@ -14,6 +14,8 @@ namespace Crossword {
 	const size_t MAX_HEIGHT = 255;
 
     class Crossword {
+		friend class Display;
+
 		size_t width;
 		size_t height;
     public:
@@ -46,12 +48,18 @@ namespace Crossword {
 		std::vector<Entry> entries;
 
         static auto load_from_stream(std::ifstream& stream) -> Crossword;
+    };
+
+	class Display {
+		const Crossword& crossword;
+
+	public:
+		Display(const Crossword& crossword);
 
 		void display(std::ostream& stream) const;
 		void display_clues(std::ostream& stream) const;
-    };
+	};
 
-	auto operator<<(std::ostream& stream, const Crossword& crossword) -> std::ostream&;
 	auto operator<<(std::ostream& stream, const Crossword::Entry& entry) -> std::ostream&;
 }
 
