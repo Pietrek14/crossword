@@ -23,7 +23,7 @@ auto Crossword::Crossword::load_from_stream(std::ifstream &stream) -> Crossword
 
     auto crossword_width = strlen(crossword_content[0]);
 
-    std::vector<std::vector<std::shared_ptr<char>>> crossword_fields;
+    std::vector<std::vector<std::shared_ptr<Entry::AnswerCharacter>>> crossword_fields;
 
     crossword_fields.resize(crossword_height);
 
@@ -39,7 +39,7 @@ auto Crossword::Crossword::load_from_stream(std::ifstream &stream) -> Crossword
             }
             else
             {
-                crossword_fields[i][j] = std::make_shared<char>(' ');
+                crossword_fields[i][j] = std::make_shared<Entry::AnswerCharacter>(' ');
             }
         }
     }
@@ -94,7 +94,7 @@ auto Crossword::Crossword::load_from_stream(std::ifstream &stream) -> Crossword
         std::getline(entry_stream, clue);
 
         std::string correct;
-        std::vector<std::shared_ptr<char>> entry_characters;
+        std::vector<std::shared_ptr<Entry::AnswerCharacter>> entry_characters;
 
         if (direction == Entry::Direction::VERTICAL)
         {
@@ -121,4 +121,10 @@ auto Crossword::Crossword::load_from_stream(std::ifstream &stream) -> Crossword
 
 auto Crossword::Crossword::answer(size_t entry_index, std::string answer) -> void {
     entries[entry_index].set_answer(answer);
+}
+
+auto Crossword::Crossword::check() -> void {
+    for (auto &entry : entries) {
+        entry.check();
+    }
 }

@@ -1,20 +1,25 @@
 #include "crossword.hpp"
 
+#include "../color/color.hpp"
+
+#include <optional>
+
 Crossword::Display::Display(const Crossword& crossword) : crossword(crossword) {}
 
 void Crossword::Display::display(std::ostream &stream) const
 {
     using Entry = Crossword::Entry;
+    using OptAnswerCharacter = std::optional<Crossword::Entry::AnswerCharacter>;
 
-    char **crossword_content = new char *[crossword.height + 1];
+    auto **crossword_content = new OptAnswerCharacter *[crossword.height];
 
     for (auto i = 0; i < crossword.height; i++)
     {
-        crossword_content[i] = new char[crossword.width + 1];
+        crossword_content[i] = new OptAnswerCharacter[crossword.width];
 
         for (auto j = 0; j < crossword.width; j++)
         {
-            crossword_content[i][j] = '#';
+            crossword_content[i][j] = std::nullopt;
         }
     }
 
@@ -119,12 +124,28 @@ void Crossword::Display::display(std::ostream &stream) const
             }
 
             auto &current = crossword_content[i / scale_factor.second][(j - 1) / scale_factor.first - 1];
-            if (current == '#')
+            if (current == std::nullopt)
                 stream << '#';
             else
             {
-                if (i % scale_factor.second == scale_factor.second / 2 && (j - 1) % scale_factor.first == scale_factor.first / 2)
-                    stream << current;
+                if (i % scale_factor.second == scale_factor.second / 2 && (j - 1) % scale_factor.first == scale_factor.first / 2) {
+                    switch (current.value().state)
+                    {
+                        case Entry::AnswerCharacter::State::CORRECT:
+                            stream << Color::Modifier(Color::FG_GREEN);
+                            break;
+                        case Entry::AnswerCharacter::State::INCORRECT:
+                            stream << Color::Modifier(Color::FG_RED);
+                            break;
+                        case Entry::AnswerCharacter::State::UNKNOWN:
+                            stream << Color::Modifier(Color::FG_BLUE);
+                            break;
+                    }
+
+                    stream << current.value().character;
+
+                    stream << Color::Modifier::FG_RESET;
+                }
                 else
                     stream << ' ';
             }

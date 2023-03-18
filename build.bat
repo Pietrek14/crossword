@@ -1,1 +1,1 @@
-clang -std=c++20 src/main.cpp src/crossword/crossword.cpp src/crossword/entry.cpp src/crossword/display.cpp src/crossword/error.cpp -o build/main.exe -Wall -Wpedantic
+clang -std=c++20 src/main.cpp src/crossword/crossword.cpp src/crossword/entry.cpp src/crossword/display.cpp src/crossword/error.cpp src/color/color.cpp -o build/main.exe -Wall -Wpedantic

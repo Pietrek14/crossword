@@ -64,6 +64,7 @@ auto main() -> int
             input.close();
 
             bool playing = true;
+            uint16_t checks_count = 0;
 
             while (playing)
             {
@@ -100,6 +101,15 @@ auto main() -> int
                     {
                         std::cout << "Your answer was " << e.get_actual() << " characters long, while the entry is " << e.get_expected() << " characters long." << std::endl;
                     }
+
+                    break;
+                }
+                case Action::CHECK:
+                {
+                    crossword.check();
+                    checks_count++;
+
+                    std::cout << "Checked " << checks_count << " times." << std::endl;
 
                     break;
                 }

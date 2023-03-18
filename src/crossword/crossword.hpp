@@ -54,8 +54,23 @@ namespace Crossword
 
 			using Position = std::pair<uint16_t, uint16_t>;
 
+			struct AnswerCharacter
+			{
+				enum class State
+				{
+					UNKNOWN,
+					CORRECT,
+					INCORRECT
+				};
+
+				char character;
+				State state;
+
+				AnswerCharacter(char character, State state = State::UNKNOWN);
+			};
+
 		private:
-			std::vector<std::shared_ptr<char>> answer;
+			std::vector<std::shared_ptr<AnswerCharacter>> answer;
 			Position position;
 			Direction direction;
 
@@ -66,11 +81,12 @@ namespace Crossword
 			auto get_length() const -> size_t;
 			auto get_direction() const -> Direction;
 			auto get_position() const -> Position;
-			auto get_character(size_t index) const -> char;
+			auto get_character(size_t index) const -> AnswerCharacter;
 
-			Entry(std::vector<std::shared_ptr<char>> characters, Position position, Direction direction, std::string correct, std::string clue);
+			Entry(std::vector<std::shared_ptr<AnswerCharacter>> characters, Position position, Direction direction, std::string correct, std::string clue);
 
-			void set_answer(std::string new_answer);
+			auto set_answer(std::string new_answer) -> void;
+			auto check() -> void;
 		};
 
 		std::vector<Entry> entries;
@@ -78,6 +94,7 @@ namespace Crossword
 		static auto load_from_stream(std::ifstream &stream) -> Crossword;
 
 		auto answer(size_t entry_index, std::string answer) -> void;
+		auto check() -> void;
 	};
 
 	class Display
